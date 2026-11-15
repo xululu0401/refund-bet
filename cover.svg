@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 1200 1200">
+  <rect width="1200" height="1200" fill="#f6f4ef"/>
+  <rect x="70" y="70" width="1060" height="1060" rx="18" fill="#fff" stroke="#ddd8cd" stroke-width="3"/>
+  <text x="130" y="220" font-family="-apple-system,'PingFang SC','Microsoft YaHei',sans-serif" font-size="120" font-weight="800" fill="#1c2230">赢了反而亏</text>
+  <text x="130" y="296" font-family="-apple-system,'PingFang SC','Microsoft YaHei',sans-serif" font-size="38" fill="#4b5466">「主队夺冠就全额退款」到底值不值</text>
+  <rect x="130" y="340" width="230" height="78" rx="10" fill="#b3261e"/>
+  <text x="245" y="396" text-anchor="middle" font-family="-apple-system,'PingFang SC','Microsoft YaHei',sans-serif" font-size="48" font-weight="800" fill="#fff">不划算</text>
+  <text x="390" y="372" font-family="-apple-system,'PingFang SC','Microsoft YaHei',sans-serif" font-size="30" fill="#1c2230">你估主队夺冠概率 30%</text>
+  <text x="390" y="410" font-family="-apple-system,'PingFang SC','Microsoft YaHei',sans-serif" font-size="30" font-weight="700" fill="#a4610c">低于 8.6% 才划算</text>
+  <rect x="130" y="500" width="430" height="160" rx="14" fill="#fff" stroke="#1c2230" stroke-width="4"/>
+  <text x="156" y="546"  font-family="-apple-system,'PingFang SC','Microsoft YaHei',sans-serif" font-size="26" fill="#4b5466">不搞活动</text>
+  <text x="156" y="600"  font-family="-apple-system,'PingFang SC','Microsoft YaHei',sans-serif" font-size="50" font-weight="800" fill="#1f7a45">999,000 元</text>
+  <text x="156" y="638"  font-family="-apple-system,'PingFang SC','Microsoft YaHei',sans-serif" font-size="22" fill="#8b919c">1,000 件</text>
+  <rect x="130" y="740" width="430" height="160" rx="80" fill="#fff" stroke="#2457a6" stroke-width="4"/>
+  <text x="345" y="786" text-anchor="middle" font-family="-apple-system,'PingFang SC','Microsoft YaHei',sans-serif" font-size="26" fill="#4b5466">搞活动 · 期望</text>
+  <text x="345" y="840" text-anchor="middle" font-family="-apple-system,'PingFang SC','Microsoft YaHei',sans-serif" font-size="50" font-weight="800" fill="#b3261e">−371,120 元</text>
+  <text x="345" y="878" text-anchor="middle" font-family="-apple-system,'PingFang SC','Microsoft YaHei',sans-serif" font-size="22" fill="#8b919c">比不搞少 1,370,120 元</text>
+  <rect x="620" y="560" width="450" height="160" rx="14" fill="#fff" stroke="#1c2230" stroke-width="4"/>
+  <text x="646" y="606"  font-family="-apple-system,'PingFang SC','Microsoft YaHei',sans-serif" font-size="26" fill="#4b5466">70% 没发生</text>
+  <text x="646" y="660"  font-family="-apple-system,'PingFang SC','Microsoft YaHei',sans-serif" font-size="50" font-weight="800" fill="#1f7a45">1,548,400 元</text>
+  <text x="646" y="698"  font-family="-apple-system,'PingFang SC','Microsoft YaHei',sans-serif" font-size="22" fill="#8b919c">1,600 件，一分不退</text>
+  <rect x="620" y="780" width="450" height="160" rx="14" fill="#fff" stroke="#1c2230" stroke-width="4"/>
+  <text x="646" y="826"  font-family="-apple-system,'PingFang SC','Microsoft YaHei',sans-serif" font-size="26" fill="#4b5466">30% 主队夺冠了</text>
+  <text x="646" y="880"  font-family="-apple-system,'PingFang SC','Microsoft YaHei',sans-serif" font-size="50" font-weight="800" fill="#b3261e">−4,850,000 元</text>
+  <text x="646" y="918"  font-family="-apple-system,'PingFang SC','Microsoft YaHei',sans-serif" font-size="22" fill="#8b919c">退 1,600 人 × 100%</text>
+  <path d="M560,820 C590,820 590,640 620,640" fill="none" stroke="#2457a6" stroke-width="3"/>
+  <path d="M560,820 C590,820 590,860 620,860" fill="none" stroke="#2457a6" stroke-width="3"/>
+  <text x="130" y="1010" font-family="-apple-system,'PingFang SC','Microsoft YaHei',sans-serif" font-size="30" fill="#4b5466">改一项：退款名额限 457 个 → 期望 1,000,137 元</text>
+  <text x="130" y="1085" font-family="-apple-system,'PingFang SC','Microsoft YaHei',sans-serif" font-size="24" fill="#8b919c">虚构示例 · 概率自己估 · 不评价任何品牌或活动</text>
+</svg>

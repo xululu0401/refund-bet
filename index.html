@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>赢了反而亏 · 「要是那件事发生就退款」的活动值不值</title>
+<meta name="description" content="商家搞「主队夺冠就全额退款」「下雨就免单」这类活动：填售价、成本、搞不搞各卖几件、退多少、你估的概率，画出决策树，算期望、最坏情况、临界概率和改哪一项才划算。">
+<style>
+  :root{--bg:#f6f4ef;--card:#fff;--ink:#1c2230;--ink2:#4b5466;--mut:#8b919c;--line:#ddd8cd;--win:#1f7a45;--lose:#b3261e;--amb:#a4610c;--blue:#2457a6;--hi:#fdf3c7}
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font:16px/1.6 -apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:900px;margin:0 auto;padding:22px 14px 72px}
+  h1{font-size:32px;line-height:1.2;margin:0 0 6px}
+  .sub{color:var(--ink2);margin:0;font-size:15.5px}
+  .muted{color:var(--mut);font-size:13.5px}
+  .hide{display:none !important}
+  button,input{font:inherit}
+  button{cursor:pointer}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 4px}
+  .chip{background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 13px;font-size:13.5px;color:var(--ink2)}
+  .chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin:14px 0;min-width:0}
+  .h2{font-size:15px;font-weight:700;margin:0 0 10px;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+  .form{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px 14px}
+  .f{min-width:0}
+  .f label{display:block;font-size:12.5px;color:var(--ink2);margin-bottom:2px}
+  input{border:1px solid var(--line);border-radius:6px;padding:7px 9px;background:#fff;font-size:16px;width:100%;min-width:0;font-variant-numeric:tabular-nums}
+  input.bad{border-color:var(--lose);background:#fff4f2}
+  .hint{font-size:12px;color:var(--mut);margin-top:2px;line-height:1.4}
+  .box.bad{border-radius:6px;padding:10px 12px;font-size:14.5px;margin:10px 0;background:#f8e1dc;color:#6b2416;border:1px solid #f0c7bd;overflow-wrap:anywhere}
+  .box ul{margin:4px 0 0;padding-left:20px}
+  /* 结论 */
+  .verdict{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+  .badge{font-size:22px;font-weight:800;padding:4px 14px;border-radius:8px;color:#fff;white-space:nowrap}
+  .badge.win{background:var(--win)} .badge.lose{background:var(--lose)}
+  .headline{font-size:17px;margin:8px 0 0;overflow-wrap:anywhere}
+  /* 决策树 */
+  .tree{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr) minmax(0,1.3fr);gap:14px 26px;align-items:center;margin-top:6px}
+  .node{border:2px solid var(--ink);border-radius:10px;padding:9px 12px;background:#fff;min-width:0;overflow-wrap:anywhere;position:relative}
+  .node .t{font-size:12.5px;color:var(--ink2)}
+  .node .v{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.25}
+  .node .w{font-size:12.5px;color:var(--mut);line-height:1.4}
+  .node.root{border-style:dashed;border-color:var(--mut);text-align:center}
+  .node.chance{border-radius:999px;text-align:center;border-color:var(--blue)}
+  .node.pos .v{color:var(--win)} .node.neg .v{color:var(--lose)}
+  .node.best{box-shadow:0 0 0 4px var(--hi)}
+  .col{display:flex;flex-direction:column;gap:14px;min-width:0}
+  .edge{font-size:12px;color:var(--blue);font-weight:700;margin-bottom:-10px}
+  .ev{font-size:13px;color:var(--ink2);margin-top:4px}
+  svg.lines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+  /* 读数条 */
+  .kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:4px}
+  .kpi{border-left:3px solid var(--line);padding:2px 10px;min-width:0}
+  .kpi b{display:block;font-size:20px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+  .kpi span{font-size:12.5px;color:var(--ink2)}
+  .act{display:block;width:100%;text-align:left;background:#fff;border:1px solid var(--line);border-radius:6px;padding:9px 12px;margin:6px 0;font-size:14.5px;overflow-wrap:anywhere}
+  .act:hover{border-color:var(--ink)}
+  .act small{display:block;color:var(--mut);font-size:13px}
+  table{border-collapse:collapse;width:100%;font-size:14px}
+  th,td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:center;font-variant-numeric:tabular-nums;white-space:nowrap}
+  th{font-size:12.5px;color:var(--mut);font-weight:600}
+  td.pass{color:var(--win);font-weight:700} td.fail{color:var(--lose)}
+  td.cur{outline:2px solid var(--ink);outline-offset:-2px;background:var(--hi)}
+  .scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .chart svg{width:100%;height:auto;display:block}
+  .note{font-size:13.5px;color:var(--ink2);overflow-wrap:anywhere}
+  .note li{margin:3px 0}
+  .bar2{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  .btn{background:var(--ink);border:1px solid var(--ink);color:#fff;border-radius:6px;padding:7px 12px;font-size:14px}
+  .btn.ghost{background:#fff;color:var(--ink)}
+  .foot{color:var(--mut);font-size:13px;margin-top:22px}
+  @media (max-width:700px){
+    h1{font-size:26px}
+    .panel{padding:13px 12px}
+    .form{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .tree{grid-template-columns:minmax(0,1fr);gap:10px}
+    .tree .col{padding-left:14px;border-left:3px solid var(--line)}
+    .tree .col.c3{margin-left:14px}
+    svg.lines{display:none}
+    .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .node .v{font-size:20px}
+    th,td{padding:6px 5px;font-size:12.5px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>赢了反而亏</h1>
+  <p class="sub">「主队夺冠就全额退款」「下雨就免单」听着豪气。填售价、成本、搞不搞活动各能卖几件、退多少、你估那件事发生的概率，画成一棵决策树：期望多赚还是少赚、万一发生会亏多少、概率低于多少才划算、改哪一项能救回来。</p>
+  <div class="chips" id="presets"></div>
+  <p class="muted" id="presetNote"></p>
+
+  <div class="panel">
+    <div class="h2">活动怎么搞 <span class="muted" id="saveTag"></span></div>
+    <div class="form">
+      <div class="f"><label for="event">那件事</label><input id="event" autocomplete="off" maxlength="16"><div class="hint">发生了就退款，比如「主队夺冠」「下雨」</div></div>
+      <div class="f"><label for="price">售价（元）</label><input id="price" inputmode="decimal" autocomplete="off" maxlength="14"></div>
+      <div class="f"><label for="cost">每件成本（元）</label><input id="cost" inputmode="decimal" autocomplete="off" maxlength="14"><div class="hint">进货 + 物流，退款时收不回来</div></div>
+      <div class="f"><label for="base">不搞活动能卖几件</label><input id="base" inputmode="numeric" autocomplete="off" maxlength="12"></div>
+      <div class="f"><label for="sales">搞活动能卖几件</label><input id="sales" inputmode="numeric" autocomplete="off" maxlength="12"><div class="hint">你的估计</div></div>
+      <div class="f"><label for="fixed">活动额外花费（元）</label><input id="fixed" inputmode="decimal" autocomplete="off" maxlength="16"><div class="hint">宣传、物料、保险</div></div>
+      <div class="f"><label for="refund">发生了退多少（%）</label><input id="refund" inputmode="decimal" autocomplete="off" maxlength="6"><div class="hint">100 = 全额退</div></div>
+      <div class="f"><label for="cap">退款名额（个）</label><input id="cap" inputmode="numeric" autocomplete="off" maxlength="12"><div class="hint">0 = 买了的都退</div></div>
+      <div class="f"><label for="prob">你估发生的概率（%）</label><input id="prob" inputmode="decimal" autocomplete="off" maxlength="6"><div class="hint">自己的判断，页面不预测</div></div>
+    </div>
+    <div class="bar2"><button type="button" class="btn ghost" id="reset">回到默认</button></div>
+    <div class="box bad hide" id="errBox"></div>
+  </div>
+
+  <div id="res">
+    <div class="panel">
+      <div class="verdict"><span class="badge" id="badge"></span><span class="muted" id="badgeSub"></span></div>
+      <p class="headline" id="headline"></p>
+    </div>
+
+    <div class="panel">
+      <div class="h2">决策树 <span class="muted">金额都是这一季的利润</span></div>
+      <div class="tree" id="tree">
+        <svg class="lines" id="lines"></svg>
+        <div class="col c1"><div class="node root" id="nRoot"><div class="t">要不要搞</div><div class="v">？</div></div></div>
+        <div class="col c2">
+          <div class="node" id="nNo"></div>
+          <div class="node chance" id="nYes"></div>
+        </div>
+        <div class="col c3">
+          <div class="edge" id="eN"></div>
+          <div class="node" id="nN"></div>
+          <div class="edge" id="eY"></div>
+          <div class="node" id="nY"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="h2">决定结论的几个数</div>
+      <div class="kpis" id="kpis"></div>
+    </div>
+
+    <div class="panel">
+      <div class="h2">改哪一项能救回来</div>
+      <div id="acts"></div>
+      <p class="note" id="actNote"></p>
+    </div>
+
+    <div class="panel">
+      <div class="h2">概率估错了会怎样 <span class="muted">格子 = 比不搞多赚多少</span></div>
+      <div class="scroll"><table id="grid"></table></div>
+      <p class="note" id="gridNote"></p>
+    </div>
+
+    <div class="panel">
+      <div class="h2">期望利润随概率变化</div>
+      <div class="chart" id="chart"></div>
+      <p class="note" id="chartNote"></p>
+    </div>
+
+    <div class="panel">
+      <div class="h2">这棵树没算进去的事</div>
+      <ul class="note">
+        <li>概率是你自己估的。页面不预测比赛、天气或任何事件；博彩赔率、专家预测都只是参考，估错多少看上面的表。</li>
+        <li>期望值是「同样的活动搞很多次」的平均。只搞一次时，结果只会是右边两片叶子之一，所以要单独看「万一发生」那片叶子你扛不扛得住。</li>
+        <li>假设退款不收回商品、不扣平台抽成和税、买家买不买与那件事的概率无关。</li>
+        <li>活动的宣传效果（话题、新客）如果能折成钱，就加进「搞活动能卖几件」；折不成钱的，这里不算。</li>
+        <li>退款类活动可能涉及广告、促销与有奖销售的规定，做之前请自己确认规则与承诺写清楚；本页只算账。</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="bar2">
+    <button type="button" class="btn" id="dlPng">结果卡 PNG</button>
+    <button type="button" class="btn ghost" id="dlCsv">CSV</button>
+    <button type="button" class="btn ghost" id="dlMd">Markdown</button>
+    <button type="button" class="btn ghost" id="dlJson">备份 JSON</button>
+    <button type="button" class="btn ghost" id="impJson">导入备份</button>
+    <input type="file" id="impFile" accept="application/json,.json" class="hide">
+  </div>
+
+  <p class="foot">默认数字是虚构示例（「夺冠就退款」借自一条热榜话题，本页不核实、也不评价任何品牌或活动）。全部在你的浏览器里算，不联网，输入只存在本机。</p>
+</div>
+<script src="./core.js"></script>
+<script src="./ui.js"></script>
+</body>
+</html>
